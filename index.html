@@ -44,6 +44,12 @@
       font-weight: bold;
     }
 
+    .nota-roja {
+      font-size: 13px;
+      color: #c62828;
+      margin-top: 4px;
+    }
+
     input, select {
       width: 100%;
       padding: 10px;
@@ -83,6 +89,9 @@
 
     <label>Precio Diesel surtidor</label>
     <input type="number" id="surtidor" oninput="recalcular()">
+    <div class="nota-roja">
+      de La Pampa – Mendoza y la Patagonia cuentan con una quita en el ICL 45% (equiv $90)
+    </div>
 
     <label>Precio Diesel mayorista</label>
     <input type="number" id="mayorista" oninput="recalcular()">
@@ -161,12 +170,4 @@ function recalcular() {
   if (precioTanque > 0 && ahorro > 0) {
     const meses = precioTanque / ahorro;
     document.getElementById("resultadoTanque").innerText =
-      "Con este ahorro cubrís el tanque en " + meses.toFixed(1) + " meses";
-  } else {
-    document.getElementById("resultadoTanque").innerText = "—";
-  }
-}
-</script>
-
-</body>
-</html>
+      "Con este ahorro cubrís el tanque en " +
