@@ -10,13 +10,26 @@
       font-family: Arial, sans-serif;
       background: #f5f7fa;
       margin: 0;
-      padding: 20px;
+      padding: 0;
+    }
+
+    .portada {
+      width: 100%;
+      height: 260px;
+      overflow: hidden;
+    }
+
+    .portada img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     h1 {
       text-align: center;
       color: #1e2a5a;
-      margin-bottom: 10px;
+      margin: 15px 0 10px;
     }
 
     p.sub {
@@ -70,137 +83,127 @@
     .resultado.azul {
       background: #e3f2fd;
     }
- .portada {
-  width: 100%;
-}
 
-.portada img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
+    @media (max-width: 768px) {
+      .portada {
+        height: 180px;
+      }
 
-
-.portada img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-   @media (max-width: 768px) {
-  h1 {
-    margin-top: 0;
-  }
-
+      h1 {
+        margin-top: 10px;
+      }
+    }
   </style>
 </head>
 
 <body>
 
- <div class="portada">
-  <img src="portada-nueva.png" alt="Portada">
-</div>
+  <!-- PORTADA -->
+  <div class="portada">
+    <img src="portada-nueva.png" alt="Portada cotizador">
+  </div>
 
+  <h1>Cotizador de Ahorro de Combustible</h1>
+  <p class="sub">
+    Ingresá los datos y calculá automáticamente el ahorro mensual
+    y en cuántos meses cubrís un tanque propio.
+  </p>
 
-  
-  <header class="portada">
-  <img src="portada.jpg" alt="Portada cotizador de combustible">
-</header>
+  <div class="container">
 
+    <!-- PRECIOS -->
+    <div class="section">
+      <h3>Datos de precios</h3>
 
-<h1>Cotizador de Ahorro de Combustible</h1>
-<p class="sub">
-  Ingresá los datos y calculá automáticamente el ahorro mensual y
-  en cuántos meses cubrís un tanque propio.
-</p>
+      <label>Precio Diesel surtidor</label>
+      <input type="number" id="surtidor" oninput="recalcular()">
+      <div class="nota-roja">
+        Mendoza y la Patagonia cuentan con una quita en el ICL del 45% (equiv. $90)
+      </div>
 
-<div class="container">
+      <label>Precio Diesel mayorista</label>
+      <input type="number" id="mayorista" oninput="recalcular()">
 
-  <!-- PRECIOS -->
-  <div class="section">
-    <h3>Datos de precios</h3>
-
-    <label>Precio Diesel surtidor</label>
-    <input type="number" id="surtidor" oninput="recalcular()">
-    <div class="nota-roja">
-    La Pampa – Mendoza y la Patagonia cuentan con una quita en el ICL 45% (equiv $90)
+      <label>Diferencia por litro</label>
+      <div class="resultado" id="dif">$ 0</div>
     </div>
 
-    <label>Precio Diesel mayorista</label>
-    <input type="number" id="mayorista" oninput="recalcular()">
+    <!-- CONSUMO -->
+    <div class="section">
+      <h3>Consumo</h3>
 
-    <label>Diferencia por litro</label>
-    <div class="resultado" id="dif">$ 0</div>
+      <label>Kilómetros mensuales por camión</label>
+      <input type="number" id="km" oninput="recalcular()">
+
+      <label>Cantidad de camiones</label>
+      <input type="number" id="unidades" oninput="recalcular()">
+
+      <label>Consumo mensual por unidad</label>
+      <div class="resultado" id="consumoUnidad">0 litros</div>
+
+      <label>Consumo total</label>
+      <div class="resultado" id="consumoTotal">0 litros</div>
+    </div>
+
+    <!-- AHORRO -->
+    <div class="section">
+      <h3>Ahorro</h3>
+
+      <label>Ahorro mensual estimado</label>
+      <div class="resultado" id="ahorro">$ 0</div>
+    </div>
+
+    <!-- TANQUE -->
+    <div class="section">
+      <h3>Opción de tanque</h3>
+
+      <label>Seleccionar tanque</label>
+      <select id="precioTanque" oninput="recalcular()">
+        <option value="">Seleccione una opción</option>
+        <option value="36000000">10.000 litros – $36.000.000</option>
+        <option value="68000000">20.000 litros – $68.000.000</option>
+        <option value="99000000">30.000 litros – $99.000.000</option>
+      </select>
+
+      <div class="resultado azul" id="resultadoTanque">—</div>
+    </div>
+
   </div>
 
-  <!-- CONSUMO -->
-  <div class="section">
-    <h3>Consumo</h3>
+  <script>
+    function recalcular() {
+      const surtidor = Number(document.getElementById("surtidor").value) || 0;
+      const mayorista = Number(document.getElementById("mayorista").value) || 0;
+      const km = Number(document.getElementById("km").value) || 0;
+      const unidades = Number(document.getElementById("unidades").value) || 0;
+      const precioTanque = Number(document.getElementById("precioTanque").value) || 0;
 
-    <label>Kilómetros mensuales por camión</label>
-    <input type="number" id="km" oninput="recalcular()">
+      const diferencia = surtidor - mayorista;
+      const consumoUnidad = (km / 100) * 45;
+      const consumoTotal = consumoUnidad * unidades;
+      const ahorro = consumoTotal * diferencia;
 
-    <label>Cantidad de camiones</label>
-    <input type="number" id="unidades" oninput="recalcular()">
+      document.getElementById("dif").innerText =
+        "$ " + diferencia.toLocaleString("es-AR");
 
-    <label>Consumo mensual por unidad</label>
-    <div class="resultado" id="consumoUnidad">0 litros</div>
+      document.getElementById("consumoUnidad").innerText =
+        consumoUnidad.toFixed(0) + " litros";
 
-    <label>Consumo total</label>
-    <div class="resultado" id="consumoTotal">0 litros</div>
-  </div>
+      document.getElementById("consumoTotal").innerText =
+        consumoTotal.toFixed(0) + " litros";
 
-  <!-- AHORRO -->
-  <div class="section">
-    <h3>Ahorro</h3>
+      document.getElementById("ahorro").innerText =
+        "$ " + ahorro.toLocaleString("es-AR");
 
-    <label>Ahorro mensual estimado</label>
-    <div class="resultado" id="ahorro">$ 0</div>
-  </div>
+      if (precioTanque > 0 && ahorro > 0) {
+        const meses = precioTanque / ahorro;
+        document.getElementById("resultadoTanque").innerText =
+          "Con este ahorro cubrís el tanque en " + meses.toFixed(1) + " meses";
+      } else {
+        document.getElementById("resultadoTanque").innerText = "—";
+      }
+    }
+  </script>
 
-  <!-- TANQUE -->
-  <div class="section">
-    <h3>Opción de tanque</h3>
-
-    <label>Seleccionar tanque</label>
-    <select id="precioTanque" oninput="recalcular()">
-      <option value="">Seleccione una opción</option>
-      <option value="36000000">10.000 litros – $36.000.000</option>
-      <option value="68000000">20.000 litros – $68.000.000</option>
-      <option value="99000000">30.000 litros – $99.000.000</option>
-    </select>
-
-    <div class="resultado azul" id="resultadoTanque">—</div>
-  </div>
-
-</div>
-
-<script>
-function recalcular() {
-  const surtidor = Number(document.getElementById("surtidor").value) || 0;
-  const mayorista = Number(document.getElementById("mayorista").value) || 0;
-  const km = Number(document.getElementById("km").value) || 0;
-  const unidades = Number(document.getElementById("unidades").value) || 0;
-  const precioTanque = Number(document.getElementById("precioTanque").value) || 0;
-
-  const diferencia = surtidor - mayorista;
-  const consumoUnidad = (km / 100) * 45;
-  const consumoTotal = consumoUnidad * unidades;
-  const ahorro = consumoTotal * diferencia;
-
-  document.getElementById("dif").innerText =
-    "$ " + diferencia.toLocaleString("es-AR");
-
-  document.getElementById("consumoUnidad").innerText =
-    consumoUnidad.toFixed(0) + " litros";
-
-  document.getElementById("consumoTotal").innerText =
-    consumoTotal.toFixed(0) + " litros";
-
-  document.getElementById("ahorro").innerText =
-    "$ " + ahorro.toLocaleString("es-AR");
-
-  if (precioTanque > 0 && ahorro > 0) {
-    const meses = precioTanque / ahorro;
-    document.getElementById("resultadoTanque").innerText =
-      "Con este ahorro cubrís el tanque en " +
+</body>
+</html>
